@@ -1076,22 +1076,13 @@ function ChessGame() {
               ...(layer ?? {}),
             }}
           >
-            {showMoveDot && destKind === 'capture' ? (
-              <span
-                className="chess-game__move-dot chess-game__move-dot--capture"
-                aria-hidden
-              />
-            ) : null}
             {pieceLift ? (
               <span className="chess-game__piece-lift">{children}</span>
             ) : (
               children
             )}
-            {showMoveDot && destKind === 'empty' ? (
-              <span
-                className="chess-game__move-dot chess-game__move-dot--empty"
-                aria-hidden
-              />
+            {showMoveDot ? (
+              <span className="chess-game__move-dot" aria-hidden />
             ) : null}
             {mark ? (
               <span
