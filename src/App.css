@@ -1,4 +1,8 @@
 .app {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   width: 100%;
   min-height: 100%;
+  box-sizing: border-box;
 }

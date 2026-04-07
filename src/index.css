@@ -1,26 +1,5 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --chess-accent: #6a1b9a;
-  --chess-accent-bg: rgba(106, 27, 154, 0.12);
-  --chess-accent-border: rgba(106, 27, 154, 0.45);
-  --chess-text-h: #1a0a24;
-  --chess-border: #e0d0e8;
-  --chess-card-bg: #fff;
-  --chess-btn-bg: #f5eef9;
-  --chess-btn-hover: #e8d5f2;
-  --chess-sidebar-bg: rgba(232, 213, 242, 0.35);
-  --chess-muted: #5c4a68;
+html {
+  min-height: 100%;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -28,9 +7,6 @@
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -41,35 +17,95 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+html[data-theme='dark'] {
+  color-scheme: dark;
 
-    --chess-accent: #ce93d8;
-    --chess-accent-bg: rgba(206, 147, 216, 0.15);
-    --chess-accent-border: rgba(206, 147, 216, 0.5);
-    --chess-text-h: #f3e5f5;
-    --chess-border: #3d3548;
-    --chess-card-bg: #252028;
-    --chess-btn-bg: #2d2635;
-    --chess-btn-hover: #3d3548;
-    --chess-sidebar-bg: rgba(45, 38, 53, 0.6);
-    --chess-muted: #b39ddb;
-  }
+  --text: #c4c4c4;
+  --text-h: #f2f2f2;
+  --bg: #1a1a1a;
+  --border: #404040;
+  --code-bg: #262626;
+  --accent: #d0d0d0;
+  --accent-bg: #333333;
+  --accent-border: #555555;
+  --social-bg: #222222;
+  --shadow: rgba(0, 0, 0, 0.45) 0 4px 20px;
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+  --chess-text-h: #f2f2f2;
+  --chess-border: #4a4a4a;
+  --chess-card-bg: #262626;
+  --chess-btn-bg: #333333;
+  --chess-btn-hover: #404040;
+  --chess-sidebar-bg: #262626;
+  --chess-muted: #9a9a9a;
+
+  --chess-primary-bg: #e8e8e8;
+  --chess-primary-hover: #ffffff;
+  --chess-primary-fg: #141414;
+  --chess-primary-border: #fafafa;
+
+  --eval-bar-light: #ffffff;
+  --eval-bar-dark: #000000;
+  --eval-bar-border: rgba(255, 255, 255, 0.22);
+
+  --setup-overlay-bg: rgba(0, 0, 0, 0.58);
+  --chess-fieldset-bg: rgba(255, 255, 255, 0.05);
+
+  --board-outer-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.35),
+    0 8px 28px rgba(0, 0, 0, 0.55);
+
+  color: var(--text);
+  background: var(--bg);
+}
+
+html[data-theme='light'] {
+  color-scheme: light;
+
+  --text: #454545;
+  --text-h: #1a1a1a;
+  --bg: #e4e4e4;
+  --border: #bdbdbd;
+  --code-bg: #dedede;
+  --accent: #3a3a3a;
+  --accent-bg: #d6d6d6;
+  --accent-border: #9e9e9e;
+  --social-bg: #ececec;
+  --shadow: rgba(0, 0, 0, 0.1) 0 2px 12px;
+
+  --chess-text-h: #1a1a1a;
+  --chess-border: #b5b5b5;
+  --chess-card-bg: #f2f2f2;
+  --chess-btn-bg: #fafafa;
+  --chess-btn-hover: #e8e8e8;
+  --chess-sidebar-bg: #f2f2f2;
+  --chess-muted: #5c5c5c;
+
+  --chess-primary-bg: #2a2a2a;
+  --chess-primary-hover: #3d3d3d;
+  --chess-primary-fg: #fafafa;
+  --chess-primary-border: #1a1a1a;
+
+  --eval-bar-light: #ffffff;
+  --eval-bar-dark: #000000;
+  --eval-bar-border: rgba(0, 0, 0, 0.18);
+
+  --setup-overlay-bg: rgba(0, 0, 0, 0.38);
+  --chess-fieldset-bg: rgba(0, 0, 0, 0.04);
+
+  --board-outer-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 10px 32px rgba(0, 0, 0, 0.16);
+
+  color: var(--text);
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 #root {
@@ -77,15 +113,13 @@
   max-width: 100%;
   margin: 0 auto;
   text-align: left;
-  min-height: 100svh;
+  flex: 1;
   display: flex;
   flex-direction: column;
+  min-height: 100%;
+  min-height: 100svh;
   box-sizing: border-box;
   background: var(--bg);
-}
-
-body {
-  margin: 0;
 }
 
 h1,
@@ -96,12 +130,11 @@ h2 {
 }
 
 h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
+  font-size: 1.75rem;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.35rem;
   @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+    font-size: 1.5rem;
   }
 }
 h2 {

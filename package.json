@@ -5,11 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/copy-stockfish.mjs",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "node scripts/copy-stockfish.mjs"
   },
   "dependencies": {
+    "stockfish": "^18.0.7",
     "chess.js": "^1.4.0",
     "react": "^19.2.4",
     "react-chessboard": "^5.10.0",
