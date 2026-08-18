@@ -1,0 +1,136 @@
+.hero {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+  padding: 2.5rem 1rem 3rem;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.hero__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 26rem;
+}
+
+.hero__eyebrow {
+  margin: 0 0 0.55rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--chess-muted);
+}
+
+.hero__title {
+  margin: 0 0 0.75rem;
+  font-size: clamp(2.125rem, 6vmin, 3rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--text-h);
+}
+
+.hero__lede {
+  margin: 0 0 1.15rem;
+  font-size: 1.02rem;
+  line-height: 1.45;
+  color: var(--chess-muted);
+}
+
+.hero__swatches {
+  display: flex;
+  gap: 0.45rem;
+  margin: 0 0 1.65rem;
+}
+
+.hero__swatch {
+  width: 0.72rem;
+  height: 0.72rem;
+  border-radius: 3px;
+}
+
+.hero__swatch--best {
+  background: #22c55e;
+}
+
+.hero__swatch--safe {
+  background: #3b82f6;
+}
+
+.hero__swatch--danger {
+  background: #ef4444;
+}
+
+.hero__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.65rem;
+  width: 100%;
+  max-width: 16rem;
+}
+
+.hero__play,
+.hero__settings {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: 100%;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.hero__play {
+  padding: 0.72rem 1.15rem;
+  border: 1px solid var(--chess-primary-border, #1a1a1a);
+  background: var(--chess-primary-bg, #2a2a2a);
+  color: var(--chess-primary-fg, #fafafa);
+}
+
+.hero__play-icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+.hero__play:hover:not(:disabled) {
+  background: var(--chess-primary-hover, #3d3d3d);
+}
+
+.hero__play:focus-visible,
+.hero__settings:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.hero__play:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.hero__settings {
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--chess-border);
+  background: var(--chess-btn-bg);
+  color: var(--text-h);
+}
+
+.hero__settings:hover {
+  background: var(--chess-btn-hover);
+}
+
+.hero__status {
+  margin: 1rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--chess-muted);
+}

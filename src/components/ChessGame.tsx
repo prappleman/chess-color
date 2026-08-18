@@ -41,6 +41,7 @@ import {
   type UiTheme,
 } from '../themeStorage'
 import './ChessGame.css'
+import { Hero } from './Hero'
 import { neoPieces } from './neoPieces'
 import { PlayAsRandomIcon } from './PlayAsRandomIcon'
 import { PLAY_AS_ICON_BLACK, PLAY_AS_ICON_WHITE } from '../playAsIcons'
@@ -263,7 +264,7 @@ function ChessGame() {
   const moveHistoryRef = useRef<string[]>([])
   const [playerColor, setPlayerColor] = useState<'w' | 'b'>('w')
   const [playAsChoice, setPlayAsChoice] = useState<'w' | 'b' | 'random'>('w')
-  const [botDifficulty, setBotDifficulty] = useState(12)
+  const [botDifficulty, setBotDifficulty] = useState(0)
   const [isBotThinking, setIsBotThinking] = useState(false)
   const engineRef = useRef<StockfishEngine | null>(null)
   const evalEngineRef = useRef<StockfishEngine | null>(null)
@@ -314,7 +315,7 @@ function ChessGame() {
     const preventSelect = (e: Event) => e.preventDefault()
     el.addEventListener('selectstart', preventSelect, true)
     return () => el.removeEventListener('selectstart', preventSelect, true)
-  }, [])
+  }, [gameStarted])
 
   useEffect(() => {
     applyThemeToDocument(uiTheme)
@@ -346,13 +347,13 @@ function ChessGame() {
   }, [fen])
 
   useEffect(() => {
-    if (!gameStarted || !settingsOpen) return
+    if (!settingsOpen) return
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setSettingsOpen(false)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [gameStarted, settingsOpen])
+  }, [settingsOpen])
 
   const gameOver = chess.isGameOver()
   const [moveSquares, setMoveSquares] = useState<
@@ -839,6 +840,11 @@ function ChessGame() {
     setSettingsOpen(false)
   }, [playAsChoice])
 
+  const startQuickPlay = useCallback(() => {
+    setBotDifficulty(0)
+    startGame()
+  }, [startGame])
+
   const newGame = useCallback(() => {
     setPromotion(null)
     clearPieceFocus()
@@ -1189,13 +1195,19 @@ function ChessGame() {
     return { ratio, label, aria }
   }, [evalBarSnapshot, evalBarBusy])
 
-  const showSettingsOverlay = !gameStarted || settingsOpen
+  const showSettingsOverlay = settingsOpen
   const setupStatusText =
     engineStatus === 'loading'
       ? 'Loading chess engine…'
       : engineStatus === 'error'
         ? `Engine failed to load${engineError ? `: ${engineError}` : ''}`
         : 'Ready when you are.'
+  const heroStatusText =
+    engineStatus === 'loading'
+      ? 'Loading chess engine…'
+      : engineStatus === 'error'
+        ? `Engine failed to load${engineError ? `: ${engineError}` : ''}`
+        : ''
 
   useEffect(() => {
     if (!showSettingsOverlay) return
@@ -1207,7 +1219,13 @@ function ChessGame() {
   }, [showSettingsOverlay])
 
   return (
-    <div className={gameStarted ? 'chess-game chess-game--playing' : 'chess-game'}>
+    <div
+      className={
+        gameStarted
+          ? 'chess-game chess-game--playing'
+          : 'chess-game chess-game--hero'
+      }
+    >
       {gameStarted ? (
         <div className="chess-game__title-bar">
           <h1 className="chess-game__title">Chess</h1>
@@ -1226,39 +1244,42 @@ function ChessGame() {
       >
         {uiTheme === 'dark' ? <ThemeSunIcon /> : <ThemeMoonIcon />}
       </button>
-      <div
-        className={
-          gameStarted ? 'chess-game__main chess-game__main--centered' : 'chess-game__main'
-        }
-      >
-        {gameStarted ? (
-          <header className="chess-game__header">
-            <p className="chess-game__status" role="status">
-              {engineStatus === 'error'
-                ? `Engine failed to load${engineError ? `: ${engineError}` : ''}`
-                : isBotThinking
-                  ? 'Opponent is thinking…'
-                  : gameStatus(chess)}
+      {!gameStarted ? (
+        <Hero
+          onPlay={startQuickPlay}
+          onOpenSettings={() => setSettingsOpen(true)}
+          playDisabled={engineStatus !== 'ready'}
+          statusText={heroStatusText}
+        />
+      ) : null}
+      {gameStarted ? (
+      <div className="chess-game__main chess-game__main--centered">
+        <header className="chess-game__header">
+          <p className="chess-game__status" role="status">
+            {engineStatus === 'error'
+              ? `Engine failed to load${engineError ? `: ${engineError}` : ''}`
+              : isBotThinking
+                ? 'Opponent is thinking…'
+                : gameStatus(chess)}
+          </p>
+          {checkMateSymbolsEnabled ? (
+            <p className="chess-game__legend">
+              <span className="chess-game__legend-marks">
+                <span className="chess-game__legend-mark">+</span> check
+                <span className="chess-game__legend-mark">#</span> mate
+              </span>
             </p>
-            {checkMateSymbolsEnabled ? (
-              <p className="chess-game__legend">
-                <span className="chess-game__legend-marks">
-                  <span className="chess-game__legend-mark">+</span> check
-                  <span className="chess-game__legend-mark">#</span> mate
-                </span>
-              </p>
-            ) : null}
-          </header>
-        ) : null}
+          ) : null}
+        </header>
 
         <div
           className={
-            gameStarted && evalBarReady
+            evalBarReady
               ? 'chess-game__board-row chess-game__board-row--with-eval'
               : 'chess-game__board-row'
           }
         >
-          {gameStarted && evalBarReady ? (
+          {evalBarReady ? (
             <div className="chess-game__eval-row">
               <div className="chess-game__eval-row-main">
                 <span className="chess-game__eval-axis chess-game__eval-axis--side">
@@ -1364,47 +1385,46 @@ function ChessGame() {
               </div>
             ) : null}
           </div>
-          {gameStarted ? (
-            <div className="chess-game__board-bottom">
-              <div
-                className="chess-game__difficulty-box"
-                aria-label={`Bot difficulty ${difficultyLabel(botDifficulty)}, rating ${difficultyTargetRating(botDifficulty)}`}
-              >
-                <span className="chess-game__difficulty-tier">
-                  {difficultyLabel(botDifficulty)}
-                </span>
-                <span className="chess-game__difficulty-sep" aria-hidden />
-                <span className="chess-game__difficulty-rating">
-                  {difficultyTargetRating(botDifficulty)}
-                </span>
-              </div>
-              <div
-                className="chess-game__board-toolbar"
-                role="toolbar"
-                aria-label="Game actions"
-              >
-                <button
-                  type="button"
-                  className="chess-game__new"
-                  onClick={newGame}
-                >
-                  Reset
-                </button>
-                <button
-                  type="button"
-                  className="chess-game__settings-btn"
-                  onClick={() => setSettingsOpen(true)}
-                  aria-label="Settings"
-                  title="Settings"
-                  aria-haspopup="dialog"
-                >
-                  <SettingsGearIcon />
-                </button>
-              </div>
+          <div className="chess-game__board-bottom">
+            <div
+              className="chess-game__difficulty-box"
+              aria-label={`Bot difficulty ${difficultyLabel(botDifficulty)}, rating ${difficultyTargetRating(botDifficulty)}`}
+            >
+              <span className="chess-game__difficulty-tier">
+                {difficultyLabel(botDifficulty)}
+              </span>
+              <span className="chess-game__difficulty-sep" aria-hidden />
+              <span className="chess-game__difficulty-rating">
+                {difficultyTargetRating(botDifficulty)}
+              </span>
             </div>
-          ) : null}
+            <div
+              className="chess-game__board-toolbar"
+              role="toolbar"
+              aria-label="Game actions"
+            >
+              <button
+                type="button"
+                className="chess-game__new"
+                onClick={newGame}
+              >
+                Reset
+              </button>
+              <button
+                type="button"
+                className="chess-game__settings-btn"
+                onClick={() => setSettingsOpen(true)}
+                aria-label="Settings"
+                title="Settings"
+                aria-haspopup="dialog"
+              >
+                <SettingsGearIcon />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+      ) : null}
 
       {showSettingsOverlay ? (
         <div
@@ -1412,14 +1432,14 @@ function ChessGame() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="chess-setup-title"
-          onClick={gameStarted ? () => setSettingsOpen(false) : undefined}
+          onClick={() => setSettingsOpen(false)}
         >
           <div
             className="chess-game__setup-card"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 id="chess-setup-title" className="chess-game__setup-title">
-              {gameStarted ? 'Settings' : 'Chess'}
+              Settings
             </h2>
             <p className="chess-game__setup-status" role="status">
               {setupStatusText}

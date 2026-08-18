@@ -22,6 +22,11 @@
   padding-top: calc(5.15rem + env(safe-area-inset-top, 0px));
 }
 
+.chess-game--hero {
+  justify-content: center;
+  padding-top: max(0.75rem, env(safe-area-inset-top, 0px));
+}
+
 .chess-game__theme-fab {
   position: fixed;
   top: calc(1.45rem + env(safe-area-inset-top, 0px));
