@@ -25,6 +25,7 @@
 .chess-game--hero {
   justify-content: center;
   padding-top: max(0.75rem, env(safe-area-inset-top, 0px));
+  overflow-y: auto;
 }
 
 .chess-game__theme-fab {
