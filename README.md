@@ -1,73 +1,55 @@
-# React + TypeScript + Vite
+# Chess Color
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A browser chess game that shows **how good each move is** by painting the board.
 
-Currently, two official plugins are available:
+Green, blue, and red overlays come from a local Stockfish engine — best moves, reasonable moves, and mistakes — so you can read a position at a glance instead of staring at an evaluation number.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Play against the same engine in your browser, from a 250 Elo beginner up to maximum strength. Nothing is sent to a server.
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Color-coded move hints** — legal destinations (and the selected piece) tint green / blue / red from engine scores
+- **Play vs Stockfish** — WASM engine in a Web Worker, with chess.com-style ratings from 250 to 3200
+- **Eval bar** — live evaluation as the game unfolds
+- **Check and mate marks** — `+` and `#` on forcing destinations
+- **Play as white, black, or random**
+- **Light and dark UI**, with toggles for which hint colors to show
 
-## Expanding the ESLint configuration
+## Tech stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **React 19** + **TypeScript** + **Vite**
+- **[chess.js](https://github.com/jhlywa/chess.js)** for rules, legal moves, and game state
+- **[react-chessboard](https://github.com/Clariity/react-chessboard)** for the board UI
+- **[Stockfish 18](https://github.com/official-stockfish/Stockfish)** (lite WASM) for the opponent and move classification
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Getting started
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Requires **Node.js 20+**.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone https://github.com/prappleman/chess-color.git
+cd chess-color
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Then open the URL Vite prints, usually [http://localhost:5173](http://localhost:5173).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Script | What it does |
+| --- | --- |
+| `npm run dev` | Start the development server |
+| `npm run build` | Typecheck and build for production |
+| `npm run preview` | Serve the production build locally |
+| `npm run lint` | Run ESLint |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## How it works
+
+On your turn, a Stockfish worker scores every legal move. The UI maps those scores to three tiers:
+
+| Color | Meaning |
+| --- | --- |
+| Green | Best, or a near-best forcing line |
+| Blue | Reasonable |
+| Red | Clearly worse than the best move |
+
+Settings let you color destinations, the selected piece, or both, and you can hide any tier. Below Stockfish’s official `UCI_Elo` floor, search time is shortened so a 250 rating actually plays like a beginner.
